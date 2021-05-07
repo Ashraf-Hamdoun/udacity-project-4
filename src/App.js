@@ -34,6 +34,9 @@ class BooksApp extends Component {
 
     // Update Books API data
     updatedBooks: [],
+
+    // search
+    dataOfSearch: [],
   };
 
   /** Put books into state.books from API */
@@ -83,17 +86,27 @@ class BooksApp extends Component {
   }
 
   // Search
-  sewrchBook() {
-    BooksAPI.search().then((query) => {
-      this.setState({query})
-    })
+  searchBook = async (e) => {
+    try {
+      // input text
+      const InputText = e.target.value
+      const result = await BooksAPI.search(InputText).then((dataOfSearch) => {
+        this.setState({
+          dataOfSearch
+        })
+      })
+
+      console.log(this.state.dataOfSearch);
+    } catch (error) {
+      console.log('Error is :: ' + error);
+    }
   }
 
   render() {
     return (
       <div className="app">
         {this.state.showSearchPage ? (
-          <SearchPage showSearchPage={this.CloseSearch}/>
+          <SearchPage showSearchPage={this.CloseSearch} searchBook={this.searchBook} infos={this.state.dataOfSearch} />
           ) : (
             <div className="list-books">
             

@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Book from '../Components/Book'
 
 class SearchPage extends Component {
     render() {
@@ -20,11 +21,13 @@ class SearchPage extends Component {
                   However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
                   you don't find a specific author or title. Every search is limited by search terms.
                 */}
-                <input type="text" placeholder="Search by title or author" />
+                <input type="text" placeholder="Search by title or author" onChange={this.props.searchBook}/>
               </div>
             </div>
             <div className="search-books-results">
-              <ol className="books-grid" />
+              <ol className="books-grid">
+                <Book infos={this.props.infos}/>
+              </ol>
             </div>
           </div>
         )
