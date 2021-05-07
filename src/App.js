@@ -26,17 +26,36 @@ class BooksApp extends Component {
     books: [],
     
     // Update Books args
+    /** We make these variables
+     * to associate onChangeShelf
+     * with componentDidUpdate */
     book: '',
     shelf: '',
 
-    // Search query
-    query: 'IOejDAAAQBAJ',
+    // Update Books API data
+    updatedBooks: [],
   };
 
   /** Put books into state.books from API */
   componentDidMount() {
     BooksAPI.getAll().then((books) => {
-      this.setState({books})
+      this.setState({
+        books: books,
+
+        // We must define these variables to prevent any errors with Update api
+        book: books[0],
+        shelf: books[0].shelf
+      })
+    })
+  }
+
+  /** Update books API data */
+  componentDidUpdate(book, newShelf) {
+    book = this.state.book;
+    newShelf = this.state.shelf;
+    
+    BooksAPI.update(book, newShelf).then((updatedBooks) => {
+      this.setState({updatedBooks})
     })
   }
   
@@ -56,7 +75,7 @@ class BooksApp extends Component {
   /** Change Books Shelf */
   onChangeShelf = (book, newShelf) => {
     book.shelf = newShelf;
-    // change the state
+    // change the state of the update function
     this.setState({
       book: book,
       shelf: newShelf
@@ -87,7 +106,6 @@ class BooksApp extends Component {
             {/** Search button */}
             <SearchBtn showSearchPage={this.OpenSearch} />
             
-            {console.log(this.state.query)}
           </div>
         )}
       </div>
