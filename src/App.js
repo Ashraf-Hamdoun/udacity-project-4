@@ -77,7 +77,7 @@ class BooksApp extends Component {
 
   /** Change Books Shelf */
   onChangeShelf = (book, shelf) => {
-    if (shelf === 'none') {
+    if (shelf === "none") {
       this.state.books.splice(this.state.books.indexOf(book), 1);
     } else {
       book.shelf = shelf;
@@ -99,23 +99,27 @@ class BooksApp extends Component {
         const result = await BooksAPI.search(InputText).then((dataOfSearch) => {
           // Compare between arrays and remove duplicates
           for (let i = 0; i < dataOfSearch.length; i++) {
-              const element = dataOfSearch[i];
-              // compare by loops
-              for (let j = 0; j < this.state.books.length; j++) {
-                  const ele = this.state.books[j];
-                  
-                  if (element.id === ele.id) {
-                      dataOfSearch.splice(i, 1);
-                      console.log('i found it');
-                  }
+            const element = dataOfSearch[i];
+
+            // add .shelf to the new element
+            element.shelf = "none";
+
+            // compare by loops
+            for (let j = 0; j < this.state.books.length; j++) {
+              const ele = this.state.books[j];
+
+              if (element.id === ele.id) {
+                dataOfSearch.splice(i, 1);
+                console.log("i found it");
               }
+            }
           }
 
           this.setState({ dataOfSearch });
-          console.log( dataOfSearch );
+          console.log(dataOfSearch);
         });
       } else {
-        console.log('ok');
+        console.log("ok");
       }
     } catch (error) {
       console.log("Error is :: " + error);
@@ -124,25 +128,25 @@ class BooksApp extends Component {
 
   // Add new book from search
   AddFromSearch = (book, shelf) => {
-    if (shelf === 'none') {
+    if (shelf === "none") {
       this.state.dataOfSearch.splice(this.state.dataOfSearch.indexOf(book), 1);
-      console.log('Book has removed from search result');
+      console.log("Book has removed from search result");
     } else {
       book.shelf = shelf;
       this.state.books.push(book);
-      
+
       // Compare between arrays and remove duplicates
       for (let i = 0; i < this.state.dataOfSearch.length; i++) {
-          const element = this.state.dataOfSearch[i];
-          // compare by loops
-          for (let j = 0; j < this.state.books.length; j++) {
-              const ele = this.state.books[j];
-              
-              if (element.id === ele.id) {
-                  this.state.dataOfSearch.splice(i, 1);
-                  console.log('i found it');
-              }
+        const element = this.state.dataOfSearch[i];
+        // compare by loops
+        for (let j = 0; j < this.state.books.length; j++) {
+          const ele = this.state.books[j];
+
+          if (element.id === ele.id) {
+            this.state.dataOfSearch.splice(i, 1);
+            console.log("i found it");
           }
+        }
       }
 
       // change the state of the update function
@@ -153,7 +157,7 @@ class BooksApp extends Component {
       });
       console.log(this.state.books);
     }
-  }
+  };
   render() {
     return (
       <div className="app">
