@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 
+/** Routers */
+import { BrowserRouter, Route } from "react-router-dom";
+
 /** Components */
-import BooksSelves from "./Components/BooksSelves";
-import SearchBtn from "./Components/SearchBtn";
-import Header from "./Components/Header";
 import SearchPage from "./pages/SearchPage";
+import Home from "./pages/Home";
 
 // This's the books which come from the api of Udacity
 import * as BooksAPI from "./BooksAPI";
@@ -14,12 +15,6 @@ import "./App.css";
 
 class BooksApp extends Component {
   state = {
-    /**
-     * TODO: Instead of using this state variable to keep track of which page
-     * we're on, use the URL in the browser's address bar. This will ensure that
-     * users can use the browser's back and forward buttons to navigate between
-     * pages, as well as provide a good URL they can bookmark and share.
-     */
     showSearchPage: false,
 
     // books
@@ -78,6 +73,7 @@ class BooksApp extends Component {
   /** Change Books Shelf */
   onChangeShelf = (book, shelf) => {
     if (shelf === "none") {
+      book.shelf = shelf;
       this.state.books.splice(this.state.books.indexOf(book), 1);
     } else {
       book.shelf = shelf;
@@ -97,43 +93,46 @@ class BooksApp extends Component {
       const InputText = e.target.value;
       if (InputText !== "") {
         const result = await BooksAPI.search(InputText).then((dataOfSearch) => {
-
-          console.log('before', dataOfSearch);
+          console.log("before", dataOfSearch);
           /**
            *  Invalid queries are handled and prior search results are not shown
            * {error: "empty query", items: Array(0)}
            */
 
           if (dataOfSearch.error === "empty query") {
-            console.log('error');
+            console.log("Error :: empty query");
+            document.querySelector('.emptyQuery').style.display = 'block';
           } else {
+            document.querySelector('.emptyQuery').style.display = 'none';
+
             // Compare between arrays and remove duplicates
             for (let i = 0; i < dataOfSearch.length; i++) {
               const element = dataOfSearch[i];
-  
+
               // add .shelf to the new element
               element.shelf = "none";
-  
+
               // compare by loops
               for (let j = 0; j < this.state.books.length; j++) {
                 const ele = this.state.books[j];
-  
+
                 if (element.id === ele.id) {
                   dataOfSearch.splice(i, 1);
                   console.log("i found it");
                 }
               }
             }
-  
+
             this.setState({ dataOfSearch });
-            console.log('after', dataOfSearch);
+            console.log("after", dataOfSearch);
           }
-          
         });
       } else {
+        document.querySelector('.emptyQuery').style.display = 'none';
+        
         // Search results are not shown when all of the text is deleted
         this.setState({
-          dataOfSearch: []
+          dataOfSearch: [],
         });
         console.log("Np results ...");
       }
@@ -174,32 +173,29 @@ class BooksApp extends Component {
       console.log(this.state.books);
     }
   };
+
   render() {
     return (
-      <div className="app">
-        {this.state.showSearchPage ? (
-          <SearchPage
-            showSearchPage={this.CloseSearch}
-            searchBook={this.searchBook}
-            infos={this.state.dataOfSearch}
-            onChangeShelf={this.AddFromSearch}
-          />
-        ) : (
-          <div className="list-books">
-            {/** The header */}
-            <Header />
-
-            {/** My books shelves */}
-            <BooksSelves
-              books={this.state.books}
+      <BrowserRouter>
+        <div className="app">
+          <Route exact path="/">
+            <Home
               onChangeShelf={this.onChangeShelf}
+              showSearchPage={this.OpenSearch}
+              books={this.state.books}
             />
+          </Route>
 
-            {/** Search button */}
-            <SearchBtn showSearchPage={this.OpenSearch} />
-          </div>
-        )}
-      </div>
+          <Route path="/search">
+            <SearchPage
+              showSearchPage={this.CloseSearch}
+              searchBook={this.searchBook}
+              infos={this.state.dataOfSearch}
+              onChangeShelf={this.AddFromSearch}
+            />
+          </Route>
+        </div>
+      </BrowserRouter>
     );
   }
 }
