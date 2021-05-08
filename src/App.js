@@ -97,29 +97,45 @@ class BooksApp extends Component {
       const InputText = e.target.value;
       if (InputText !== "") {
         const result = await BooksAPI.search(InputText).then((dataOfSearch) => {
-          // Compare between arrays and remove duplicates
-          for (let i = 0; i < dataOfSearch.length; i++) {
-            const element = dataOfSearch[i];
 
-            // add .shelf to the new element
-            element.shelf = "none";
+          console.log('before', dataOfSearch);
+          /**
+           *  Invalid queries are handled and prior search results are not shown
+           * {error: "empty query", items: Array(0)}
+           */
 
-            // compare by loops
-            for (let j = 0; j < this.state.books.length; j++) {
-              const ele = this.state.books[j];
-
-              if (element.id === ele.id) {
-                dataOfSearch.splice(i, 1);
-                console.log("i found it");
+          if (dataOfSearch.error === "empty query") {
+            console.log('error');
+          } else {
+            // Compare between arrays and remove duplicates
+            for (let i = 0; i < dataOfSearch.length; i++) {
+              const element = dataOfSearch[i];
+  
+              // add .shelf to the new element
+              element.shelf = "none";
+  
+              // compare by loops
+              for (let j = 0; j < this.state.books.length; j++) {
+                const ele = this.state.books[j];
+  
+                if (element.id === ele.id) {
+                  dataOfSearch.splice(i, 1);
+                  console.log("i found it");
+                }
               }
             }
+  
+            this.setState({ dataOfSearch });
+            console.log('after', dataOfSearch);
           }
-
-          this.setState({ dataOfSearch });
-          console.log(dataOfSearch);
+          
         });
       } else {
-        console.log("ok");
+        // Search results are not shown when all of the text is deleted
+        this.setState({
+          dataOfSearch: []
+        });
+        console.log("Np results ...");
       }
     } catch (error) {
       console.log("Error is :: " + error);
