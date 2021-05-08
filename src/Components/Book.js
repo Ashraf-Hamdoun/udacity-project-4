@@ -1,8 +1,19 @@
 import React, { Component } from "react";
 
 class Book extends Component {
+  
+  // this function is for error of missing images spacialy for "v"
+  imageLink = (link) => {
+    if (link === undefined) {
+      return link = "https://5zznly.com/thumbs/WNX5f.jpeg"
+    } else {
+      return link.thumbnail
+    }
+  }
+
   render() {
     const { infos } = this.props;
+    
     const post = infos.map((element) => {
       return (
         <li key={element.id}>
@@ -13,7 +24,8 @@ class Book extends Component {
                 style={{
                   width: 128,
                   height: 193,
-                    backgroundImage: `url(${element.imageLinks.thumbnail})`,
+                  backgroundImage: `url(${this.imageLink(element.imageLinks)})`,
+                  backgroundSize: 'cover'
                 }}
               />
               <div className="book-shelf-changer">
@@ -29,7 +41,7 @@ class Book extends Component {
               </div>
             </div>
             <div className="book-title">{ element.title }</div>
-            <div className="book-authors">{ element.authors }</div>
+            <div className="book-authors">{element.authors}</div>
           </div>
         </li>
       );
