@@ -57,32 +57,18 @@ class BooksApp extends Component {
     });
   }
 
-  /** Here we set arrow function to open and close Srearch */
-  OpenSearch = () => {
-    this.setState({
-      showSearchPage: true,
-    });
-  };
-
-  CloseSearch = () => {
-    this.setState({
-      showSearchPage: false,
-    });
-  };
-
   /** Change Books Shelf */
   onChangeShelf = (book, shelf) => {
+    book.shelf = shelf;
+    // change the state of the update function
+    this.setState({
+      book: book,
+      shelf: shelf,
+    });
+    console.log(this.state.books);
+
     if (shelf === "none") {
-      book.shelf = shelf;
       this.state.books.splice(this.state.books.indexOf(book), 1);
-    } else {
-      book.shelf = shelf;
-      // change the state of the update function
-      this.setState({
-        book: book,
-        shelf: shelf,
-      });
-      console.log(this.state.books);
     }
   };
 
@@ -91,7 +77,14 @@ class BooksApp extends Component {
     try {
       // input text
       const InputText = e.target.value;
+
       if (InputText !== "") {
+        // Search results are not shown in the begainig
+        this.setState({
+          dataOfSearch: [],
+        });
+
+        // eslint-disable-next-line
         const result = await BooksAPI.search(InputText).then((dataOfSearch) => {
           console.log("before", dataOfSearch);
           /**
@@ -101,9 +94,13 @@ class BooksApp extends Component {
 
           if (dataOfSearch.error === "empty query") {
             console.log("Error :: empty query");
-            document.querySelector('.emptyQuery').style.display = 'block';
+            // Search results are not shown when query is empty
+            this.setState({
+              dataOfSearch: [],
+            });
+            document.querySelector(".emptyQuery").style.display = "block";
           } else {
-            document.querySelector('.emptyQuery').style.display = 'none';
+            document.querySelector(".emptyQuery").style.display = "none";
 
             // Compare between arrays and remove duplicates
             for (let i = 0; i < dataOfSearch.length; i++) {
@@ -112,29 +109,34 @@ class BooksApp extends Component {
               // add .shelf to the new element
               element.shelf = "none";
 
-              // compare by loops
+              /**
+               * compare by loops
+               * this function works to remove
+               * books which I've from search results
+               */
               for (let j = 0; j < this.state.books.length; j++) {
                 const ele = this.state.books[j];
 
                 if (element.id === ele.id) {
-                  dataOfSearch.splice(i, 1);
-                  console.log("i found it");
+                  element.shelf = ele.shelf;
                 }
               }
             }
 
             this.setState({ dataOfSearch });
             console.log("after", dataOfSearch);
+            console.log(InputText);
           }
         });
       } else {
-        document.querySelector('.emptyQuery').style.display = 'none';
-        
+        document.querySelector(".emptyQuery").style.display = "none";
+
         // Search results are not shown when all of the text is deleted
         this.setState({
           dataOfSearch: [],
         });
-        console.log("Np results ...");
+
+        console.log("No results ...");
       }
     } catch (error) {
       console.log("Error is :: " + error);
@@ -143,26 +145,25 @@ class BooksApp extends Component {
 
   // Add new book from search
   AddFromSearch = (book, shelf) => {
+    
+    // Compare between arrays and remove duplicates
+    for (let i = 0; i < this.state.books.length; i++) {
+      const element = this.state.books[i];
+      // compare
+      if (element.id === book.id) {
+        this.state.books.splice(i, 1);
+        console.log("Warning ::: I found the same book");
+      }
+      
+    }
+    
     if (shelf === "none") {
       this.state.dataOfSearch.splice(this.state.dataOfSearch.indexOf(book), 1);
       console.log("Book has removed from search result");
     } else {
+      
       book.shelf = shelf;
       this.state.books.push(book);
-
-      // Compare between arrays and remove duplicates
-      for (let i = 0; i < this.state.dataOfSearch.length; i++) {
-        const element = this.state.dataOfSearch[i];
-        // compare by loops
-        for (let j = 0; j < this.state.books.length; j++) {
-          const ele = this.state.books[j];
-
-          if (element.id === ele.id) {
-            this.state.dataOfSearch.splice(i, 1);
-            console.log("i found it");
-          }
-        }
-      }
 
       // change the state of the update function
       this.setState({
@@ -173,6 +174,13 @@ class BooksApp extends Component {
       console.log(this.state.books);
     }
   };
+
+  // reset books after search
+  resetBooks = () => {
+    this.setState({
+      dataOfSearch: [],
+    });
+  }
 
   render() {
     return (
@@ -192,6 +200,7 @@ class BooksApp extends Component {
               searchBook={this.searchBook}
               infos={this.state.dataOfSearch}
               onChangeShelf={this.AddFromSearch}
+              resetBooks={this.resetBooks}
             />
           </Route>
         </div>

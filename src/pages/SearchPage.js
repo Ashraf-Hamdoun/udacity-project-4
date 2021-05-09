@@ -10,20 +10,20 @@ class SearchPage extends Component {
     return (
       <div className="search-books">
         <div className="search-books-bar">
-          <NavLink className="close-search" to="/">
+          <NavLink className="close-search" to="/" onClick={this.props.resetBooks}>
             Close
           </NavLink>
           <div className="search-books-input-wrapper">
             <input
               type="text"
               placeholder="Search by title or author"
-              onChange={this.props.searchBook}
+              onKeyUp={this.props.searchBook}
             />
           </div>
         </div>
         <div className="search-books-results">
           
-          <p class="emptyQuery">empty query</p>
+          <p className="emptyQuery">empty query</p>
           
           <ol className="books-grid">
             <Book
