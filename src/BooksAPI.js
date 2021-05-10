@@ -1,13 +1,6 @@
 
 const api = "https://reactnd-books-api.udacity.com"
 
-/**
- * In out browser => open the console
- * then => the application tab
- * then => choose localStorage
- * then => choose localhost
- * there we find our token
- */
 
 // Generate a unique token for storing your bookshelf data on the backend server.
 let token = localStorage.token

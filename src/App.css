@@ -122,14 +122,6 @@ button:active {
   padding: 80px 10px 20px;
 }
 
-.emptyQuery {
-  display: none;
-  font-size: 2rem;
-  font-weight: bold;
-  text-transform: capitalize;
-  padding: 20px;
-}
-
 /* books grid */
 
 .books-grid {
@@ -139,6 +131,12 @@ button:active {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
+}
+
+.emptyQuery {
+  font-size: 2rem;
+  font-weight: bold;
+  text-transform: capitalize;
 }
 
 .books-grid li {

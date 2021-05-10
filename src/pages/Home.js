@@ -1,27 +1,32 @@
-import React, { Component } from "react";
+import React from "react";
+import { NavLink } from 'react-router-dom';
 
-import BooksSelves from "../Components/BooksSelves";
-import SearchBtn from "../Components/SearchBtn";
-import Header from "../Components/Header";
+import BookShelves from "../components/BookShelves";
 
-class Home extends Component {
-  render() {
-    return (
-      <div className="list-books">
-        {/** The header */}
-        <Header />
+export function Home(props) {
 
-        {/** My books shelves */}
-        <BooksSelves
-          books={this.props.books}
-          onChangeShelf={this.props.onChangeShelf}
-        />
-
-        {/** Search button */}
-        <SearchBtn showSearchPage={this.props.showSearchPage} />
+  return (
+    <div className="">
+      <div>
+        <div className="list-books">
+          
+          <div className="list-books-title">
+            <h1>MyReads</h1>
+          </div>
+          
+          <div className="list-books-content">
+            <BookShelves books={props.books} onChangeShelf={props.onChangeShelf} />
+          </div>
+          
+          <div className="open-search">
+            <NavLink to="/search">
+              Add a book
+            </NavLink>
+          </div>
+        </div>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default Home;
